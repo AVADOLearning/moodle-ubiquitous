@@ -10,8 +10,16 @@ base:
 
   'roles:app-moodle':
     - match: grain
-    - platforms-moodle
-    - platforms-moodle-logos
+
+  'platform-group:1':
+    - match: grain
+    - platforms-moodle-1
+    - platforms-moodle-1-logos
+
+  'platform-group:2':
+    - match: grain
+    - platforms-moodle-2
+    - platforms-moodle-2-logos
 
   'roles:app-saml':
     - match: grain
@@ -26,7 +34,8 @@ base:
   'roles:db-pgsql':
     - match: grain
     - db-pgsql
-    - platforms-moodle
+    - platforms-moodle-1
+    - platforms-moodle-2
 
   'roles:gocd-agent':
     - match: grain

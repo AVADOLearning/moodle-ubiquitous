@@ -50,7 +50,12 @@
   <agents>
     <agent hostname="app-debug-1" ipaddress="192.168.120.50" uuid="85cd02a7-b142-4e96-8668-92f1c8650475">
       <resources>
-        <resource>alp-app-dev.local</resource>
+        <resource>alp-app-dev1.local</resource>
+      </resources>
+    </agent>
+    <agent hostname="app-debug-2" ipaddress="192.168.120.51" uuid="85cd02a7-b142-4e96-8668-92f1c8650475">
+      <resources>
+        <resource>alp-app-dev2.local</resource>
       </resources>
     </agent>
   </agents>

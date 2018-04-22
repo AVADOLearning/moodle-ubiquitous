@@ -6,4 +6,4 @@ roles:
   - app-moodle-default-release
   - app-error-pages
   - app-ssl-certs
-platform-group: 1
+platform-group: 2

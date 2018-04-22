@@ -14,3 +14,9 @@ __pycache__/
 
 # GitBook
 /_book/
+
+# JetBrains
+.idea/
+
+# other custom scripts
+up_script.sh

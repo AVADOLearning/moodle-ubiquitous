@@ -2,3 +2,6 @@ environment: dev
 group: selenium
 roles:
   - selenium-node-firefox
+platform-group:
+  - 1
+  - 2

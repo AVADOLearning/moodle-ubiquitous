@@ -21,6 +21,7 @@ named:
         - gocd IN A 192.168.120.10
         - named IN A 192.168.120.15
         - app-debug-1 IN A 192.168.120.50
+        - app-debug-2 IN A 192.168.120.51
         - selenium-hub IN A 192.168.120.100
         - selenium-node-chrome IN A 192.168.120.105
         - selenium-node-firefox IN A 192.168.120.110
@@ -42,6 +43,7 @@ named:
         - 5 IN PTR salt.moodle.
         - 10 IN PTR gocd.moodle.
         - 50 IN PTR app-debug-1.moodle.
+        - 51 IN PTR app-debug-2.moodle.
         - 100 IN PTR selenium-hub.moodle.
         - 105 IN PTR selenium-node-chrome.moodle.
         - 110 IN PTR selenium-node-firefox.moodle.

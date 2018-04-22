@@ -1,3 +1,7 @@
+#Update these as needed. This is a workaround until Vagrant & Virtualbox can manage symlinks.
+MOODLE1 = '../M34_avado_20180409'
+MOODLE2 = '../M31_dotnative_20180409'
+
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/xenial64"
   config.vm.box_version = ">= 20180126.0.0"
@@ -20,7 +24,7 @@ Vagrant.configure(2) do |config|
     salt.vm.synced_folder ".", "/srv/salt", type: "rsync"
     salt.vm.synced_folder "./_vagrant/salt/pillar", "/srv/pillar", type: "rsync"
     salt.vm.provision "salt-salt", type: "shell", path: "./_vagrant/salt/install",
-                      args: [ "--master", "app-debug-1,identity-proxy,identity-provider,db-pgsql-1,gocd,named,mail-debug,salt,selenium-hub,selenium-node-chrome,selenium-node-firefox", "--minion", "salt", "--root", "/srv/salt/_vagrant/salt" ]
+                      args: [ "--master", "app-debug-1,app-debug-2,identity-proxy,identity-provider,db-pgsql-1,gocd,named,mail-debug,salt,selenium-hub,selenium-node-chrome,selenium-node-firefox", "--minion", "salt", "--root", "/srv/salt/_vagrant/salt" ]
   end
 
   config.vm.define "gocd" do |gocd|
@@ -71,7 +75,7 @@ Vagrant.configure(2) do |config|
     seleniumhub.vm.network "forwarded_port", guest: 22, host: seleniumhub.ssh.port
 
     seleniumhub.vm.synced_folder "./_vagrant", "/vagrant", type: "rsync"
-    seleniumhub.vm.provision "selenium-hub-salt", type: "shell", path: "./_vagrant/salt/install", args: ["--minion", "selenium-hub", "--root", "/vagrant/salt" ]
+    seleniumhub.vm.provision "selenium-hub-salt", type: "shell", path: "./_vagrant/salt/install", args: [ "--minion", "selenium-hub", "--root", "/vagrant/salt" ]
   end
 
   config.vm.define "selenium-node-chrome" do |seleniumnodechrome|
@@ -89,7 +93,12 @@ Vagrant.configure(2) do |config|
     seleniumnodechrome.vm.synced_folder "./_vagrant", "/vagrant", type: "rsync"
     seleniumnodechrome.vm.provision "selenium-node-chrome-salt", type: "shell", path: "./_vagrant/salt/install", args: ["--minion", "selenium-node-chrome", "--root", "/vagrant/salt" ]
 
-    seleniumnodechrome.vm.synced_folder "../Moodle", "/home/vagrant/moodle", type: "rsync",
+    seleniumnodechrome.vm.synced_folder MOODLE1, "/home/vagrant/moodle1", type: "rsync",
+                                        owner: "vagrant", group: "vagrant",
+                                        rsync__exclude: ".git/",
+                                        rsync__args: ["--rsync-path='sudo rsync'", "--archive", "--compress", "--delete"]
+
+    seleniumnodechrome.vm.synced_folder MOODLE2, "/home/vagrant/moodle2", type: "rsync",
                                         owner: "vagrant", group: "vagrant",
                                         rsync__exclude: ".git/",
                                         rsync__args: ["--rsync-path='sudo rsync'", "--archive", "--compress", "--delete"]
@@ -106,7 +115,12 @@ Vagrant.configure(2) do |config|
     seleniumnodefirefox.vm.synced_folder "./_vagrant", "/vagrant", type: "rsync"
     seleniumnodefirefox.vm.provision "selenium-node-firefox-salt", type: "shell", path: "./_vagrant/salt/install", args: ["--minion", "selenium-node-firefox", "--root", "/vagrant/salt" ]
 
-    seleniumnodefirefox.vm.synced_folder "../Moodle", "/home/vagrant/moodle", type: "rsync",
+    seleniumnodefirefox.vm.synced_folder MOODLE1, "/home/vagrant/moodle1", type: "rsync",
+                                        owner: "vagrant", group: "vagrant",
+                                        rsync__exclude: ".git/",
+                                        rsync__args: ["--rsync-path='sudo rsync'", "--archive", "--compress", "--delete"]
+
+    seleniumnodefirefox.vm.synced_folder MOODLE2, "/home/vagrant/moodle2", type: "rsync",
                                         owner: "vagrant", group: "vagrant",
                                         rsync__exclude: ".git/",
                                         rsync__args: ["--rsync-path='sudo rsync'", "--archive", "--compress", "--delete"]
@@ -123,12 +137,30 @@ Vagrant.configure(2) do |config|
     appdebug1.vm.synced_folder "./_vagrant", "/vagrant", type: "rsync"
     appdebug1.vm.provision "app-debug-1-salt", type: "shell", path: "./_vagrant/salt/install", args: [ "--minion", "app-debug-1", "--root", "/vagrant/salt" ]
 
-    appdebug1.vm.synced_folder "../Moodle", "/home/vagrant/releases/vagrant", type: "rsync",
+    appdebug1.vm.synced_folder MOODLE1, "/home/vagrant/releases/vagrant", type: "rsync",
                                owner: "vagrant", group: "vagrant",
                                rsync__exclude: [".git", "phpunit.xml", "behatrun*"],
                                rsync__rsync_path: "sudo rsync",
                                rsync__args: ["--archive", "--compress", "--delete"]
   end
+
+  config.vm.define "app-debug-2" do |appdebug2|
+      appdebug2.vm.network "private_network", ip: "192.168.120.51",
+                           netmask: "255.255.255.0"
+      appdebug2.vm.hostname = "app-debug-2.moodle"
+
+      appdebug2.ssh.port = 2234
+      appdebug2.vm.network "forwarded_port", guest: 22, host: appdebug2.ssh.port
+
+      appdebug2.vm.synced_folder "./_vagrant", "/vagrant", type: "rsync"
+      appdebug2.vm.provision "app-debug-2-salt", type: "shell", path: "./_vagrant/salt/install", args: [ "--minion", "app-debug-2", "--root", "/vagrant/salt" ]
+
+      appdebug2.vm.synced_folder MOODLE2, "/home/vagrant/releases/vagrant", type: "rsync",
+                                 owner: "vagrant", group: "vagrant",
+                                 rsync__exclude: [".git", "phpunit.xml", "behatrun*"],
+                                 rsync__rsync_path: "sudo rsync",
+                                 rsync__args: ["--archive", "--compress", "--delete"]
+    end
 
   config.vm.define "db-pgsql-1" do |db1|
     db1.vm.network "private_network", ip: "192.168.120.150",
@@ -191,6 +223,7 @@ Vagrant.configure(2) do |config|
       ],
       "moodle" => [
         "app-debug-1",
+        "app-debug-2",
         "db-pgsql-1",
       ],
       "saml" => [

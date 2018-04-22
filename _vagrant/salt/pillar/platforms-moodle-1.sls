@@ -1,5 +1,5 @@
 platforms:
-  dev.local:
+  dev1.local:
     basename: vagrant
     name: Local test site
     email: root@localhost

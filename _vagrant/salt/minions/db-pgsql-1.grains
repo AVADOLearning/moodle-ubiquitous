@@ -2,3 +2,6 @@ environment: dev
 group: dev
 roles:
   - db-pgsql
+platform-group:
+  - 1
+  - 2

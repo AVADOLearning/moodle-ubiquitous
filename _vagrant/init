@@ -90,6 +90,7 @@ if [[ "${#MACHINES[@]}" -eq 0 ]]; then
         selenium-node-firefox
 
         app-debug-1
+        app-debug-2
         db-pgsql-1
 
         identity-proxy
