@@ -5,7 +5,7 @@
 # @copyright 2018 The Ubiquitous Authors
 #
 
-base:
+alp:
   'roles:admin':
     - match: grain
     - admin
